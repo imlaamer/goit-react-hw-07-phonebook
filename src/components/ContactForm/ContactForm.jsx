@@ -1,29 +1,28 @@
-import { nanoid } from 'nanoid';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveContact, getContacts } from '../../redux';
+import { toast } from 'react-toastify';
+import { addContact, selectItems } from '../../redux';
 import css from './ContactForm.module.css';
 
 export function ContactForm() {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const items = useSelector(selectItems);
 
   const handleAddContact = event => {
     event.preventDefault();
     const form = event.currentTarget;
     const newContact = {
-      id: nanoid(),
       name: form.elements.name.value,
-      number: form.elements.number.value,
+      phone: form.elements.number.value,
     };
-    const isDuplicate = contacts.some(
+    const isDuplicate = items.some(
       contact =>
         contact.name.toLowerCase() === newContact.name.trim().toLowerCase()
     );
     if (isDuplicate) {
-      alert(`${newContact.name} is already in contacts`);
+      toast.warn(`${newContact.name} is already in contacts`);
       return;
     }
-    dispatch(saveContact(newContact));
+    dispatch(addContact(newContact));
     form.reset();
   };
 
